@@ -1,7 +1,7 @@
 const express = require("express");
 const automator = require("./automator");
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
 app.use(express.json());
 
@@ -29,5 +29,5 @@ app.post('/', function (req, res) {
 })
 
 app.listen(port, function () {
-  console.log(`Example app listening on port ${port}!`);
+  console.log(`Git bot for GCP project handling on port ${port}!`);
 });
