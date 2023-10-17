@@ -11,10 +11,8 @@ exports.execCommand = function(command){
                 console.log("error executing command")
                 reject(err);
             } else {
-                resolve({
-                            stdout:stdout.toString(),
-                            stderr: stderr.toString()
-                        });
+                resolve({stdout:stdout.toString(),
+                        stderr: stderr.toString()});
             }
         });
     });
