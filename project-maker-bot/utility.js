@@ -1,5 +1,5 @@
 const fs = require('fs');
-const {readYAML} = require("./fileActions.js");
+const {readYAML,writeFile} = require("./fileActions.js");
 const gitActions = require("./gitActions.js");
 const { env } = require('process');
 const subProcess = require('child_process');
@@ -36,7 +36,7 @@ exports.fetchandWriteTemplate = function(repo,path){
                     const content = bufferObj.toString('utf8');
                     try {
                         console.log(`Writing file ${fileName}`);
-                        fs.writeFileSync(`./${path}${fileName}`, content);
+                        writeFile(`./${path}${fileName}`, content, false);
                     } catch (err) {
                         reject(err);
                     }

@@ -1,7 +1,7 @@
 require("dotenv").config()
 const { request } = require("@octokit/request");
 const { createAppAuth } = require("@octokit/auth-app");
-const { readFileasString,listDirectory } = require("./fileActions");
+const { readFile,listDirectory } = require("./fileActions");
 
 const auth = createAppAuth({
   appId: process.env.APP_ID,
@@ -28,7 +28,7 @@ exports.buildLocalTree = function(localDirPath,repoDirPath){
         listDirectory(localDirPath)
         .then(files => {
             files.forEach(filePath=> {
-                promises.push(readFileasString(`./${filePath}`));
+                promises.push(readFile(`./${filePath}`));
             });
             Promise.all(promises)
             .then(results => {

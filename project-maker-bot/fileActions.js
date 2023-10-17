@@ -10,7 +10,7 @@ exports.listDirectory = function(path){
     })
 }
 
-exports.readFileasString = function(filePath){
+exports.readFile = function(filePath){
     return new Promise((resolve,reject) => {
         fs.readFile(filePath,"utf8", (err,data) => {
             if(err){
@@ -21,6 +21,22 @@ exports.readFileasString = function(filePath){
             }
         });
     });
+}
+
+exports.writeFile = function(filePath,content,async = true){
+    if(async){
+        return new Promise((resolve,reject) => {
+            fs.writeFile(filePath,content,(err) => {
+                if(err){
+                    reject(err);
+                }
+                resolve(`${filePath} created`);
+            });
+        });
+    }
+    else{
+        fs.writeFileSync(filePath,content);
+    }
 }
 
 exports.readYAML = function(file){

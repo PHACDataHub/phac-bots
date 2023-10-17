@@ -35,8 +35,8 @@ exports.makeProject = function(payload,branchName){
                 //3. COPY OVER CONTENTS TO A TARGET DIRECTORY and 
                 //4. GENERTE ULID
                 const commands = [utility.execCommand(`cp -r ./${templatePath} ${targetDirectory}`),
-                                  //utility.execCommand(`echo 1234567\\n`)];
-                                  utility.execCommand(`./ulid`)];
+                                  utility.execCommand(`echo 1234567\\n`)];
+                                  //utility.execCommand(`./ulid`)];
                 Promise.all(commands)
                 .then(values => {
                     const ulidStdout = values[1].stdout;
