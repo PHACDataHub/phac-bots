@@ -27,5 +27,6 @@ docker run --mount source=/var/run/docker.sock,target=/var/run/docker-host.sock,
 ```
 
 ### TODO :
-- Add Slack Integration
+- Add support for adding project members with different roles
 - Add support for editing/deleting a project
+- Add Slack Integration
