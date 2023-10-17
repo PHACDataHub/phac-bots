@@ -1,0 +1,17 @@
+apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+kind: Project
+metadata:
+  # This should be the same as project ID
+  name: "phx-01haske89a" # kpt-set: ${project-dept}${project-env}-${project-unique-id}
+  namespace: "config-control"
+  labels:
+    vanity-name: "phx-projectname" # kpt-set: ${project-dept}${project-env}-${project-vanity-name}
+    classification: ucll # kpt-set: ${project-classification}
+  annotations:
+    cnrm.cloud.google.com/blueprint: 'kpt-fn'
+spec:
+  name: phx-projectname # kpt-set: ${project-dept}${project-env}-${project-vanity-name}
+  billingAccountRef:
+    external: "016B6D-6AB281-505940" # kpt-set: ${billing-id}
+  folderRef:
+    name: ph-01haske89a-folder # kpt-set: ${project-dept}-${project-unique-id}-folder

@@ -1,0 +1,19 @@
+apiVersion: iam.cnrm.cloud.google.com/v1beta1
+kind: IAMPartialPolicy
+metadata:
+  name: phx-01haske89a-iampolicy # kpt-set: ${project-dept}${project-env}-${project-unique-id}-iampolicy
+  namespace: "config-control"
+  annotations:
+    cnrm.cloud.google.com/blueprint: 'kpt-fn'
+  labels:
+    vanity-name: "phx-projectname" # kpt-set: ${project-dept}${project-env}-${project-vanity-name}
+    classification: ucll # kpt-set: ${project-classification}
+spec:
+  bindings:
+    - role: roles/owner
+      members: # kpt-set: ${iam-owners}
+        - member: "user:fname.lname@gcp.hc-sc.gc.ca"
+  resourceRef:
+    apiVersion: resourcemanager.cnrm.cloud.google.com/v1beta1
+    external: projects/phx-01haske89a # kpt-set: projects/${project-dept}${project-env}-${project-unique-id}
+    kind: Project
