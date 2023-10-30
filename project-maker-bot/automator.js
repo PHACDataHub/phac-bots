@@ -13,8 +13,8 @@ const templatePath = '/templates/default-project/';
 //1. RECEIVE PAYLOAD CONTAINING PROJECT NAME AND USER INFO AND ETC.
 const payload = { 'project-dept': 'ph', 
                   'project-env': 'env', 
-                  'project-vanity-name': 'idc', 
-                  'project-classification': 'idfc', 
+                  'project-vanity-name': 'dummy', 
+                  'project-classification': 'dummy', 
                    members: [ 'momo', 'kitcat', 'oreo' ] , 
                    newProject: true, 
                    ulid : '123456'}
