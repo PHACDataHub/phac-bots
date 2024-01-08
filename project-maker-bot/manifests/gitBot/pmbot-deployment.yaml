@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pmbot
+  labels:
+    app: pmbot
+spec:
+  selector:
+    matchLabels:
+      app: pmbot-pod
+  replicas: 2
+  template:
+    metadata:
+      name: pmbot-pod
+      labels:
+        app: pmbot-pod
+    spec:
+      containers:
+        - name: node
+          image: vader404/pm-bot:v2.1
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: docker-certs-client
+              mountPath: /certs/client
+          envFrom:
+            - configMapRef:
+                name: pmbot-config-map
+            - secretRef:
+                name: pmbot-secret
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: '/certs'
+            - name: DOCKER_CERT_PATH
+              value: '/certs/client'
+            - name: DOCKER_TLS_VERIFY
+              value: "1"
+            - name: DOCKER_HOST
+              value: "tcp://localhost:2376"
+        - name: dind
+          image: docker:24.0.0-rc.1-dind
+          ports:
+            - name: dind-con-port
+              containerPort: 2376
+              hostPort: 2376
+              protocol: TCP
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: docker-certs-client
+              mountPath: /certs/client
+            - name: docker-certs-ca
+              mountPath: /certs/ca
+            - name: dind-storage
+              mountPath: /var/lib/docker
+          env:
+            - name: DOCKER_TLS_CERTDIR
+              value: '/certs'
+            - name: DOCKER_CERT_PATH
+              value: '/certs/client'
+            - name: DOCKER_TLS_VERIFY
+              value: "1"
+            - name: DOCKER_HOST
+              value: "tcp://localhost:2376"
+          tty: true
+      volumes:
+        - name: dind-storage
+          emptyDir: {}
+        - name: docker-certs-client
+          emptyDir: {}
+        - name: docker-certs-ca
+          emptyDir: {}
+            
+

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pmbot-config-map
+data:
+  APP_ID: "404138"
+  INSTALLATION_ID: "42616280"
+  CLIENT_ID: Iv1.528b2f6cf96a880e
+  REPO_OWNER: SiddharthaHaldar
+  REPO_NAME: gitObjects
+  PORT: "5000"

@@ -53,7 +53,7 @@ exports.makeProject = function(payload,branchName){
                     writeYAML(settersFilePath,setters);
 
                     //7. FIRE KPT COMMAND TO POPULATE YAML FILES
-                    const kptCommand = `cd ${targetDirectory}/default-project && sudo kpt fn render`;
+                    const kptCommand = `cd ${targetDirectory}/default-project && kpt fn render`;
                     utility.execCommand(kptCommand)
                     .then(res => {
 
