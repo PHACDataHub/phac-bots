@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rmq-config-map
+data:
+  rabbitMQhost: rabbitmq
+  server: pmbot
+  port: "5000"
+  producerQueue: "completedQueue"
+  consumerQueue: "createProjectQueue"

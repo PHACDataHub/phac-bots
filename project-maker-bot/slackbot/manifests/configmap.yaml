@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: slackbot-config-map
+data:
+  rabbitMQhost: rabbitmq
+  consumerQueue: "completedQueue"
+  producerQueue: "createProjectQueue"

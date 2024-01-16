@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rmq-proxy
+  labels:
+    app: rmq-proxy
+spec:
+  selector:
+    matchLabels:
+      app: rmq-proxy-pod
+  replicas: 2
+  template:
+    metadata:
+      name: rmq-proxy-pod
+      labels:
+        app: rmq-proxy-pod
+    spec:
+      containers:
+        - name: rmq-proxy
+          image: vader404/rmq-worker:v1.7.1
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: rmq-config-map
