@@ -1,0 +1,94 @@
+const { App } = require('@slack/bolt');
+const { WebClient, LogLevel } = require("@slack/web-api");
+const rmq = require('./rmq');
+const rabbitMQhost = process.env.rabbitMQhost;
+const producerQueue = process.env.producerQueue;
+const consumerQueue = process.env.consumerQueue;
+
+const app = new App({
+  token: process.env.BOT_TOKEN, 
+  appToken: process.env.APP_TOKEN,
+  socketMode: true,
+});
+
+let slack_web_client = null;
+
+const sendAck = (msg) => {
+    //console.log(`statusCode: ${res.statusCode}`)
+    //console.log(res)
+    console.log(" [x] Senning Ack Done");
+    rmq.consumerChannel.ack(msg);
+}
+
+
+const consumerCallback = (msg) => {
+        //const secs = Number(msg.content.toString().split('m')[1]);
+        console.log(" [x] Received %s", msg.content.toString());
+        const payloadJSON = JSON.parse(msg.content.toString());
+        const splitText = payloadJSON.responseText.split("Pull Request ")[1];
+        const text = `<${payloadJSON.pull_url}|Pull Request> ` + splitText;
+        const block = [
+            {
+              "type": "section",
+              "text": {
+                "type": "mrkdwn",
+                "text": text
+              }
+            }
+          ]
+        sendAck(msg);
+        slack_web_client.chat.postMessage({
+            channel: payloadJSON.channel,
+            blocks: block
+        })
+}
+
+const createProducerConsumer = () => {
+    rmq.createProducer(producerQueue);
+    rmq.createConsumer(consumerQueue,consumerCallback);
+}
+
+
+(async () => {
+    await app.start();
+    console.log('⚡️ Bolt app started');
+    slack_web_client = new WebClient(process.env.BOT_TOKEN);
+    rmq.openConnection(rabbitMQhost, createProducerConsumer);
+})();
+
+// subscribe to 'app_mention' event in your App config
+// need app_mentions:read and chat:write scopes
+app.event('app_mention', async ({ event, context, client, say }) => {
+  try {
+    rmq.producerChannel.sendToQueue(producerQueue, Buffer.from(JSON.stringify(event)), {
+        persistent: true
+    });
+    console.log(" [x] Sent '%s'", JSON.stringify(event));
+    slack_web_client.chat.postMessage({
+        channel: event.channel,
+        text: "Processing project creation request"
+    })
+    //await say({"blocks": [
+      //{
+        //"type": "section",
+        //"text": {
+          //"type": "mrkdwn",
+          //"text": `Thanks for the mention <@${event.user}>! Here's a button`
+        //},
+        //"accessory": {
+          //"type": "button",
+          //"text": {
+            //"type": "plain_text",
+            //"text": "Button",
+            //"emoji": true
+          //},
+          //"value": "click_me_123",
+          //"action_id": "first_button"
+        //}
+      //}
+    //]});
+  }
+  catch (error) {
+    console.error(error);
+  }
+});
