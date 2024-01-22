@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: slackbot
-          image: vader404/slackbot:v2.1
+          image: vader404/slackbot:v2.2.4
           ports:
             - containerPort: 3000
           envFrom:

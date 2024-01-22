@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: rmq-proxy
-          image: vader404/rmq-worker:v1.7.1
+          image: vader404/rmq-worker:v1.7.4
           ports:
             - containerPort: 3000
           envFrom:

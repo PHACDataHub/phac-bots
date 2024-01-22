@@ -1,9 +1,11 @@
+require('dotenv').config()
 const { App } = require('@slack/bolt');
 const { WebClient, LogLevel } = require("@slack/web-api");
+const { projectDetailsForm,creatingProject,invalidCommand } = require("./blocks.js");
 const rmq = require('./rmq');
 const rabbitMQhost = process.env.rabbitMQhost;
-const consumerQueue = process.env.producerQueue;
-const producerQueue  = process.env.consumerQueue;
+const producerQueue = process.env.producerQueue;
+const consumerQueue = process.env.consumerQueue;
 
 const app = new App({
   token: process.env.BOT_TOKEN, 
@@ -60,138 +62,31 @@ const createProducerConsumer = () => {
 // need app_mentions:read and chat:write scopes
 app.event('app_mention', async ({ event, context, client, say }) => {
   try {
-    await say({"blocks": [
-    		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "Please Enter Project details:"
-			}
-		},
-    {
-        "type": "input",
-        "optional": false,
-        "element": {
-          "type": "plain_text_input",
-          "action_id": "project-vanity-name"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Project Name",
-          "emoji": true
-        }
-      },
-      {
-        "type": "input",
-        "element": {
-          "type": "plain_text_input",
-          "action_id": "project-dept"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Project Department",
-          "emoji": true
-        }
-      },
-      {
-        "type": "input",
-        "element": {
-          "type": "plain_text_input",
-          "action_id": "project-classification"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Project Classification",
-          "emoji": true
-        }
-      },
-      {
-        "type": "input",
-        "element": {
-          "type": "plain_text_input",
-          "action_id": "project-env"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Project Environment",
-          "emoji": true
-        }
-      },
-      {
-        "type": "input",
-        "element": {
-          "type": "multi_static_select",
-          "placeholder": {
-            "type": "plain_text",
-            "text": "Select options",
-            "emoji": true
-          },
-          "options": [
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "momo",
-                "emoji": true
-              },
-              "value": "momo"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "kitcat",
-                "emoji": true
-              },
-              "value": "kitcat"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "oreo",
-                "emoji": true
-              },
-              "value": "oreo"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "rick",
-                "emoji": true
-              },
-              "value": "rick"
-            },
-            {
-              "text": {
-                "type": "plain_text",
-                "text": "morty",
-                "emoji": true
-              },
-              "value": "morty"
-            }
-          ],
-          "action_id": "members"
-        },
-        "label": {
-          "type": "plain_text",
-          "text": "Owners",
-          "emoji": true
-        }
-      },  
-      {
-        "type": "actions",
-        "elements": [
-          {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Submit Details",
-              "emoji": true
-            },
-            "value": "submit_project_create",
-            "action_id": "submit_project_create_data"
-          }
-        ]
-      }
-    ]});
+    let split = event.text.split(">")[1];
+    let match = true;
+    if(split.includes(" make")){
+        split = split.split(" ");
+        let matchCount = 0;
+        split.forEach(el=>{
+            if(match){
+                if(el === ''){
+                    match = true;
+                }
+                else if(el.toLowerCase() === 'make'){
+                    matchCount += 1;
+                    match = matchCount == 1 ? true:false;
+                }
+                else{
+                    match = false;
+                }}});
+        match = (matchCount == 1 && match) ? true:false;
+    }
+    else
+      match = false;
+    if(match)
+      await say(projectDetailsForm);
+    else
+      await say(invalidCommand)
   }
   catch (error) {
     console.error(error);
@@ -221,7 +116,6 @@ app.action('submit_project_create_data', async ({ ack, body, client, logger, say
     event.trigger_id = body.trigger_id;
     event.token = body.token;
     event.text = "> '"+JSON.stringify(data)+"'"
-    console.log(event);
     rmq.producerChannel.sendToQueue(producerQueue, Buffer.from(JSON.stringify(event)), {
         persistent: true
     });
@@ -230,17 +124,7 @@ app.action('submit_project_create_data', async ({ ack, body, client, logger, say
         //channel: event.channel,
         //text: "Processing project creation request"
     //})
-    await say(
-      {"blocks": [
-    		{
-			"type": "section",
-			"text": {
-				"type": "mrkdwn",
-				"text": "Processing project creation request"
-			}
-		}]
-  }
-);
+    await say(creatingProject);
   }
   catch (error) {
     console.error(error);

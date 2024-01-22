@@ -13,7 +13,8 @@ const sendAck = (msg) => {
 
 const sendMessage = function(res,originalPayload,projectPayload){
     //console.log(`statusCode: ${res.statusCode}`)
-    originalPayload.pull_url = res.data.html_url;
+    console.log(res.data.data.html_url);
+    originalPayload.pull_url = res.data.data.html_url;
     originalPayload.responseText = `Pull Request created for project : ${projectPayload["project-vanity-name"]} at ${res.headers.date}`;
     rmq.producerChannel.sendToQueue(producerQueue, Buffer.from(JSON.stringify(originalPayload)), {
         persistent: true
