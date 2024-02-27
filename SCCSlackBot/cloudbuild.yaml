@@ -1,0 +1,12 @@
+steps:
+- name: gcr.io/cloud-builders/gcloud
+  args:
+    - functions
+    - deploy
+    - sccslackbot
+    - --region=northamerica-northeast1
+    - --runtime=nodejs18
+    - --source=./SCCSlackBot/
+    - --entry-point=myCloudEventFunction
+    - --service-account=sccslacknotifs-sa@phx-01h7dnj5j46f52sev8akqd9m7g.iam.gserviceaccount.com
+    - --trigger-topic=SlackSCC
