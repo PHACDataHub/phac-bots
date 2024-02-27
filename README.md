@@ -13,7 +13,7 @@ At the moment there are a few areas that have been identified where bots can com
 ## Proposed Solutions
 There are some soultions that have been sucessfully built and are currently in a Proof of Concept State :
 1. A [Slack Bot](https://github.com/PHACDataHub/phac-bots/tree/master/project-maker-bot) for creating projects has been deployed in a private channel within slack. Upon invocation the user fills up a form with requisite details and in no time a GCP Project is ready. This functionality can and will be extended to provision other resources in GCP.
-2. A [Slack Bot](https://github.com/PHACDataHub/cloud-functions/tree/main/SCCSlackBot) that streams security notifications from the Security Command Center into a private channel within Slack. Future versions will have filtering capabilites.
+2. A [Slack Bot](https://github.com/PHACDataHub/phac-bots/tree/master/SCCSlackBot) that streams security notifications from the Security Command Center into a private channel within Slack. Future versions will have filtering capabilites.
 
 ## Business Value
 There is value in using Slack Bots on a day to day basis within the organization :
